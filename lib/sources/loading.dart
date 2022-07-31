@@ -13,19 +13,37 @@ import 'package:http/http.dart' as http;
 String url_image = "https://picsum.photos/200/300?random=1";
 String url =
     "https://gist.githubusercontent.com/nanotaboada/6396437/raw/855dd84436be2c86e192abae2ac605743fc3a127/books.json";
-Future<Books> fetchAlbum() async {
-  final response = await http.get(Uri.parse(url));
+bool need_reload = false;
+
+Future<Books> fetchAlbum(interfaces.ErrorCallBack callBack1,
+    interfaces.ErrorCallBack callBack2) async {
+  final response = await http.get(Uri.parse(url)).timeout(
+    const Duration(seconds: 20),
+    onTimeout: () {
+      //print("sdfsdff");
+      // Time has run out, do what you wanted to do.
+      return http.Response(
+          'Error', 408); // Request Timeout response status code
+    },
+  );
+  if (response.statusCode == 200) {
+    callBack2();
+    return Books.fromJson(jsonDecode(response.body));
+  } else {
+    if (response.statusCode == 408) {
+      callBack1();
+    }
+    return Books(books: []);
+  }
+
+  ////
+  /*final response = await http.get(Uri.parse(url));
 
   if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
     return Books.fromJson(jsonDecode(response.body));
   } else {
     return Books(books: []);
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    // throw Exception('Failed to load album');
-  }
+  }*/
 }
 
 class PreviewVideoWidget extends StatefulWidget {
@@ -92,7 +110,9 @@ class _LoadImagesLocaly extends State<PreviewVideoWidget> {
 
   void initState() {
     var _visible = false;
-
+    setState(() {
+      need_reload = false;
+    });
     super.initState();
 
     setValue();

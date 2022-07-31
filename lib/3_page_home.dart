@@ -28,22 +28,30 @@ class _HomeListPageWidgetState extends State<HomeListPageWidget> {
   void initState() {
     // TODO: implement initState
     setState(() {
-      isLoading = true;
+      isLoading = false;
       current_active_index = 0;
     });
     _scrollController = ScrollController()..addListener(() {});
 
     _scrollController.addListener(_scrollListener);
     WidgetsBinding.instance.addPostFrameCallback((_) => loadBookList());
-    loadBookList();
+    //loadBookList();
   }
 
   Future<void> loadBookList() async {
-    if (globals.books.books.length == 0 || true) {
+    if (globals.books.books.length == 0) {
       start_loading();
       globals.books.books.clear();
 
-      globals.books = (await loading.fetchAlbum());
+      globals.books = (await loading.fetchAlbum(() {
+        setState(() {
+          loading.need_reload = true;
+        });
+      }, () {
+        setState(() {
+          loading.need_reload = false;
+        });
+      }));
 
       for (int i = 0; i < globals.books.books.length; i++) {
         Uint8List dd = await loading.downloadImage1(loading.url_image);
@@ -53,19 +61,19 @@ class _HomeListPageWidgetState extends State<HomeListPageWidget> {
         globals.favorites_book.add(false);
       }
       end_loading();
+      setState(() {});
     }
-    setState(() {});
   }
 
   bool isLoading = false;
-  start_loading() async {
+  start_loading() {
     context.loaderOverlay.show(widget: ReconnectingOverlay());
     setState(() {
       isLoading = true;
     });
   }
 
-  end_loading() async {
+  end_loading() {
     if (context.loaderOverlay.overlayWidgetType == ReconnectingOverlay) {
       context.loaderOverlay.hide();
       isLoading = false;
@@ -144,9 +152,11 @@ class _HomeListPageWidgetState extends State<HomeListPageWidget> {
                           margin: EdgeInsets.only(left: 20 * main_scale),
                           child: Row(children: [
                             for (int i = 0; i < globals.books.books.length; i++)
-                              //{
                               interfaces.OneVerticalItem(
                                 index: i,
+                                callBack: () {
+                                  setState(() {});
+                                },
                                 current_index: current_active_index,
                                 width: _width,
                                 main_scale: main_scale,
@@ -157,7 +167,44 @@ class _HomeListPageWidgetState extends State<HomeListPageWidget> {
                     ),
                   ),
                 ),
-                if (isLoading == false)
+                if (loading.need_reload == true)
+                  Positioned(
+                    top: _hight_top,
+                    child: Container(
+                      padding: EdgeInsets.only(left: 20 * main_scale),
+                      height: 60 * main_scale,
+                      width: _width,
+                      child: InkWell(
+                        //focusColor: Colors.blue,
+                        onTap: () {
+                          setState(() {});
+                          loadBookList();
+                        },
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          textScaleFactor: 1,
+                          text: TextSpan(
+                            children: [
+                              WidgetSpan(
+                                child: Icon(
+                                  Icons.refresh,
+                                  size: 23,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                            text: "Reload " + "",
+                            style: TextStyle(
+                              color: interfaces.color_white,
+                              fontSize: 20,
+                              height: 1.8,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                if (loading.need_reload == false && isLoading == false)
                   Positioned(
                     top: _hight_top,
                     child: Container(
@@ -198,7 +245,9 @@ class _HomeListPageWidgetState extends State<HomeListPageWidget> {
                                     i++)
                                   interfaces.OneHorizontalItem(
                                     index: i,
-                                    //curent_index: current_active_index,
+                                    callBack: () {
+                                      setState(() {});
+                                    },
                                     width: _width,
                                     main_scale: main_scale,
                                   )

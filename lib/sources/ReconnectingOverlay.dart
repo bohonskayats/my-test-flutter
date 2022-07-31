@@ -17,11 +17,7 @@ class _ReconnectingOverlay extends State<ReconnectingOverlay> {
   initState() {
     // TODO: implement initState
     super.initState();
-    setValue();
-  }
-
-  setValue() {
-    setState(() {});
+    // setValue();
   }
 
   @override

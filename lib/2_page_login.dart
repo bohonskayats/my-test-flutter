@@ -318,7 +318,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
           textAlign: TextAlign.left,
           textScaleFactor: interfaces.textFactor,
           text: TextSpan(
-            text: error == true ? "Логин или пароль неверны" : "",
+            text: error == true ? "Some errors ..." : "",
             style: TextStyle(
                 color: interfaces.error_text,
                 fontSize: interfaces.font_size,
@@ -333,8 +333,9 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
   start_loading() async {
     context.loaderOverlay.show(widget: ReconnectingOverlay());
 
-    await Future.delayed(const Duration(milliseconds: 1000), () {
-      end_loading();
+    await Future.delayed(const Duration(milliseconds: 1000), () async {
+      await end_loading();
+      await Duration(milliseconds: 200);
       globals.next_page = "page_3";
       RouteNavigation(context);
     });

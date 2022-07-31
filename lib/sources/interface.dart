@@ -4,8 +4,10 @@ import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import '../4_page_detail.dart';
 import 'interface.dart' as interfaces;
 import 'globals.dart' as globals;
+import 'navigation.dart';
 
 double orid_w = 414;
 double orid_h = 896;
@@ -67,11 +69,21 @@ double block_login_height = margin_between_button * 5 +
 double normal_list_image_width = 120;
 double normal_list_image_height = 180;
 
+double image_height_detail_page = 250;
+double image_detail_part_page = 380;
+double top_margin_detail = 40;
+double best_remendec_block_height = 60;
+
+double image_width_detail_page = 100;
+
 double vertical_list_image_width = 90;
 double vertical_list_image_height = 120;
 
 double big_list_image_width = normal_list_image_width * 1.5;
 double big_list_image_height = normal_list_image_height * 1.5;
+
+//double details_hight = 300;
+
 /*
 double normal_top_block_width = normal_list_image_width * 1.4;
 double normal_top_block_height = normal_list_image_height * 1.4;
@@ -97,14 +109,19 @@ double CalculateMainScale(double w, double h) {
   return main_scale_w;
 }
 
+typedef UpdateFavouriteCallBack = void Function();
+typedef ErrorCallBack = void Function();
+
 class OneHorizontalItem extends StatefulWidget {
   final int index;
+  final UpdateFavouriteCallBack callBack;
   final double main_scale;
   final double width;
 
   const OneHorizontalItem(
       {Key? key,
       required this.index,
+      required this.callBack,
       required this.main_scale,
       required this.width})
       : super(key: key);
@@ -124,71 +141,94 @@ class _OneHorizontalItemState extends State<OneHorizontalItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: widget.width,
-      height: getHeighV(widget.index),
-      padding: EdgeInsets.only(bottom: 10),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            child: Container(
-              width: getWidthV(widget.index),
-              height: getHeighV(widget.index),
+    return InkWell(
+      //focusColor: Colors.blue,
+      onTap: () {
+        globals.next_page = "page_4";
+        globals.current_index = widget.index;
+        RouteNavigation(context);
+      },
+      child: Container(
+        width: widget.width,
+        height: getHeighV(widget.index),
+        padding: EdgeInsets.only(bottom: 10),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              left: 0,
               child: Container(
-                child: globals.books_images.length > widget.index
-                    ? FittedBox(
-                        fit: BoxFit.fill,
-                        child: Image.memory(
-                          globals.books_images.elementAt(widget.index),
+                width: getWidthV(widget.index),
+                height: getHeighV(widget.index),
+                child: Container(
+                  child: globals.books_images.length > widget.index
+                      ? FittedBox(
                           fit: BoxFit.fill,
+                          child: Image.memory(
+                            globals.books_images.elementAt(widget.index),
+                            fit: BoxFit.fill,
+                          ),
+                        )
+                      : Container(
+                          color: color_gray_semi_transpanrent,
                         ),
-                      )
-                    : Container(),
-              ),
-            ),
-          ),
-          Positioned(
-            top: (0) * widget.main_scale,
-            left: getWidthV(widget.index) * widget.main_scale + 20,
-            child: Container(
-              width: (widget.width - getWidthV(widget.index) - 60) *
-                  widget.main_scale,
-              padding: EdgeInsets.only(bottom: 60),
-              child: RichText(
-                textAlign: TextAlign.left,
-                textScaleFactor: 1,
-                text: TextSpan(
-                  children: [
-                    TextSpan(
-                      text: globals.books.books.elementAt(widget.index).author,
-                      style: TextStyle(
-                        color: interfaces.color_light_gray_3,
-                        fontSize: 16,
-                        height: 1.2,
-                      ),
-                    ),
-                  ],
-                  text:
-                      globals.books.books.elementAt(widget.index).title + "\n",
-                  style: TextStyle(
-                    color: interfaces.color_light_gray_2,
-                    fontSize: 22,
-                    height: 1.2,
-                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: (0) * widget.main_scale,
-            left: getWidthV(widget.index) * widget.main_scale + 20,
-            child: BookmarkRound(
-              index: widget.index,
+            Positioned(
+              top: (0) * widget.main_scale,
+              left: getWidthV(widget.index) * widget.main_scale +
+                  40 * widget.main_scale,
+              child: Container(
+                  width: (widget.width - getWidthV(widget.index) - 60) *
+                      widget.main_scale,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        maxLines: 2,
+                        textAlign: TextAlign.left,
+                        textScaleFactor: 1,
+                        text: TextSpan(
+                          text:
+                              globals.books.books.elementAt(widget.index).title,
+                          style: TextStyle(
+                            color: interfaces.color_light_gray_2,
+                            fontSize: 20,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
+                      RichText(
+                        maxLines: 2,
+                        textAlign: TextAlign.left,
+                        textScaleFactor: 1,
+                        text: TextSpan(
+                          text: globals.books.books
+                              .elementAt(widget.index)
+                              .author,
+                          style: TextStyle(
+                            color: interfaces.color_light_gray_3,
+                            fontSize: 15,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
             ),
-          ),
-        ],
+            Positioned(
+              bottom: (0) * widget.main_scale,
+              left: getWidthV(widget.index) * widget.main_scale +
+                  40 * widget.main_scale,
+              child: BookmarkRound(
+                index: widget.index,
+                callBack: widget.callBack,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -197,7 +237,10 @@ class _OneHorizontalItemState extends State<OneHorizontalItem> {
 //--------------------------
 
 class OneVerticalItem extends StatefulWidget {
+  final UpdateFavouriteCallBack callBack;
+
   final int index;
+  final bool need_hover;
   final int current_index;
 
   final double main_scale;
@@ -206,6 +249,8 @@ class OneVerticalItem extends StatefulWidget {
   const OneVerticalItem(
       {Key? key,
       required this.index,
+      required this.callBack,
+      this.need_hover = true,
       required this.current_index,
       required this.main_scale,
       required this.width})
@@ -224,13 +269,17 @@ class _OneVerticalItemState extends State<OneVerticalItem> {
   }
 
   double getHeigh(int i) {
-    //  if (i == widget.current_index) {
+    if (widget.need_hover == false) {
+      return interfaces.normal_list_image_height - 20;
+    }
+
     return interfaces.big_list_image_height - 25;
-    //  } else
-    //    return interfaces.normal_list_image_height;
   }
 
   double getHeighImage(int i) {
+    if (widget.need_hover == false) {
+      return interfaces.normal_list_image_height - 20;
+    }
     if (i == widget.current_index) {
       return interfaces.big_list_image_height - 25;
     } else
@@ -247,43 +296,55 @@ class _OneVerticalItemState extends State<OneVerticalItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 10),
-      width: getWidth(widget.index) * widget.main_scale,
-      height: getHeighImage(widget.index) * widget.main_scale,
-      child: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            child: Container(
-              width: getWidth(widget.index) * widget.main_scale,
-              height: getHeighImage(widget.index) * widget.main_scale,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                clipBehavior: Clip.antiAlias,
-                child: Container(
-                  child: globals.books_images.length > widget.index
-                      ? FittedBox(
-                          fit: BoxFit.cover,
-                          child: Image.memory(
-                            globals.books_images.elementAt(widget.index),
+    return InkWell(
+      //focusColor: Colors.blue,
+      onTap: () {
+        globals.next_page = "page_4";
+        globals.current_index = widget.index;
+        RouteNavigation(context);
+        //showCustomDialog(context);
+      },
+      child: Container(
+        margin: EdgeInsets.only(right: 10),
+        width: getWidth(widget.index) * widget.main_scale,
+        height: getHeighImage(widget.index) * widget.main_scale,
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              left: 0,
+              child: Container(
+                width: getWidth(widget.index) * widget.main_scale,
+                height: getHeighImage(widget.index) * widget.main_scale,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  clipBehavior: Clip.antiAlias,
+                  child: Container(
+                    child: globals.books_images.length > widget.index
+                        ? FittedBox(
                             fit: BoxFit.cover,
+                            child: Image.memory(
+                              globals.books_images.elementAt(widget.index),
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Container(
+                            color: color_gray_semi_transpanrent,
                           ),
-                        )
-                      : Container(),
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: (10) * widget.main_scale,
-            right: 10 * widget.main_scale,
-            child: interfaces.BookmarkRound(
-              index: widget.index,
+            Positioned(
+              bottom: (10) * widget.main_scale,
+              right: 10 * widget.main_scale,
+              child: interfaces.BookmarkRound(
+                index: widget.index,
+                callBack: widget.callBack,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -291,8 +352,9 @@ class _OneVerticalItemState extends State<OneVerticalItem> {
 
 class BookmarkRound extends StatefulWidget {
   final int index;
-
-  const BookmarkRound({Key? key, required this.index}) : super(key: key);
+  final UpdateFavouriteCallBack callBack;
+  const BookmarkRound({Key? key, required this.index, required this.callBack})
+      : super(key: key);
 
   @override
   _BookmarkRoundState createState() => _BookmarkRoundState();
@@ -304,10 +366,10 @@ class _BookmarkRoundState extends State<BookmarkRound> {
     return InkWell(
       //focusColor: Colors.blue,
       onTap: () {
-        print(">>>");
         setState(() {
           globals.changeIconFavorite(widget.index);
         });
+        widget.callBack();
       },
       child: Container(
         height: 30,
@@ -317,8 +379,6 @@ class _BookmarkRoundState extends State<BookmarkRound> {
           color: globals.getIconFavorite(widget.index)
               ? interfaces.color_white
               : interfaces.bg_dot_menu,
-
-          // interfaces.bg_dot_menu,
         ),
         child: Icon(
           Icons.bookmark,
@@ -390,7 +450,7 @@ class FloatingNavbarBottomMenu extends StatefulWidget {
       _FloatingNavbarBottomMenuState();
 }
 
-enum _SelectedTab { home, favorite, search, person }
+enum _SelectedTab { home, favorite }
 
 class _FloatingNavbarBottomMenuState extends State<FloatingNavbarBottomMenu> {
   var _selectedTab = _SelectedTab.home;
@@ -399,21 +459,47 @@ class _FloatingNavbarBottomMenuState extends State<FloatingNavbarBottomMenu> {
     setState(() {
       _selectedTab = _SelectedTab.values[i];
     });
+    String page_prev = globals.next_page;
+    if (_selectedTab == _SelectedTab.home) {
+      globals.next_page = "page_3";
+    } else {
+      globals.next_page = "page_5";
+    }
+    if (page_prev != globals.next_page) {
+      RouteNavigation(context);
+    }
+  }
+
+  void initState() {
+    if (globals.next_page == "page_3") {
+      setState(() {
+        _selectedTab = _SelectedTab.home;
+      });
+    }
+    if (globals.next_page == "page_5") {
+      setState(() {
+        _selectedTab = _SelectedTab.favorite;
+      });
+    }
+    super.initState();
+  }
+
+  int getIndex() {
+    return _SelectedTab.values.indexOf(_selectedTab);
   }
 
   @override
   Widget build(BuildContext context) {
     return FloatingNavbar(
       width: 160,
-      onTap: (int val) => _handleIndexChanged,
-      // backgroundColor: Colors.transparent,
+      onTap: _handleIndexChanged,
       backgroundColor: interfaces.bg_dot_menu,
       selectedBackgroundColor: interfaces.transparent,
       selectedItemColor: interfaces.active_item_dot_menu,
       unselectedItemColor: interfaces.unctive_item_dot_menu,
       borderRadius: 80,
-      elevation: 0,
-      currentIndex: _SelectedTab.values.indexOf(_selectedTab),
+      //elevation: 0,
+      currentIndex: getIndex(),
       items: [
         FloatingNavbarItem(
           icon: Icons.book_sharp,
@@ -423,6 +509,123 @@ class _FloatingNavbarBottomMenuState extends State<FloatingNavbarBottomMenu> {
         ),
       ],
       //),
+    );
+  }
+}
+
+class OneDetailItem extends StatefulWidget {
+  final int index;
+  final UpdateFavouriteCallBack callBack;
+  final double main_scale;
+  final double width;
+
+  const OneDetailItem(
+      {Key? key,
+      required this.index,
+      required this.callBack,
+      required this.main_scale,
+      required this.width})
+      : super(key: key);
+
+  @override
+  _OneDetailItemState createState() => _OneDetailItemState();
+}
+
+class _OneDetailItemState extends State<OneDetailItem> {
+  double getWidthV(int i) {
+    return interfaces.image_width_detail_page * widget.main_scale;
+  }
+
+  double getHeighV(int i) {
+    return interfaces.image_height_detail_page * widget.main_scale;
+  }
+
+  double getHeighDetailPartV(int i) {
+    return interfaces.image_height_detail_page * widget.main_scale;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: widget.width,
+      // color: Colors.red,
+      height: getHeighDetailPartV(widget.index),
+      padding: EdgeInsets.only(bottom: 10),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Container(
+              width: widget.width,
+              height: getHeighV(widget.index),
+              child: Center(
+                child: Container(
+                  height: getHeighDetailPartV(widget.index),
+                  //width: 100,
+                  child: globals.books_images.length > widget.index
+                      ? FittedBox(
+                          fit: BoxFit.fill,
+                          child: Image.memory(
+                            globals.books_images.elementAt(widget.index),
+                            fit: BoxFit.fill,
+                          ),
+                        )
+                      : Container(),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: getHeighV(widget.index) + 10 * widget.main_scale,
+            child: Container(
+              width: widget.width,
+              child: Column(
+                children: [
+                  RichText(
+                    textAlign: TextAlign.center,
+                    textScaleFactor: 1,
+                    maxLines: 1,
+                    text: TextSpan(
+                      text: globals.books.books.elementAt(widget.index).title +
+                          "\n",
+                      style: TextStyle(
+                        color: interfaces.color_light_gray_2,
+                        fontSize: 20,
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    textScaleFactor: 1,
+                    maxLines: 1,
+                    text: TextSpan(
+                      text: globals.books.books.elementAt(widget.index).author +
+                          "",
+                      style: TextStyle(
+                        color: interfaces.color_light_gray_3,
+                        fontSize: 15,
+                        height: 1.2,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: (0) * widget.main_scale,
+            width: widget.width,
+            child: Center(
+              child: BookmarkRound(
+                index: widget.index,
+                callBack: widget.callBack,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
