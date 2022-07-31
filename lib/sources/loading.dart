@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'interface.dart' as interfaces;
 
 import 'data_structeres.dart';
@@ -20,10 +19,7 @@ Future<Books> fetchAlbum(interfaces.ErrorCallBack callBack1,
   final response = await http.get(Uri.parse(url)).timeout(
     const Duration(seconds: 20),
     onTimeout: () {
-      //print("sdfsdff");
-      // Time has run out, do what you wanted to do.
-      return http.Response(
-          'Error', 408); // Request Timeout response status code
+      return http.Response('Error', 408);
     },
   );
   if (response.statusCode == 200) {
@@ -35,15 +31,6 @@ Future<Books> fetchAlbum(interfaces.ErrorCallBack callBack1,
     }
     return Books(books: []);
   }
-
-  ////
-  /*final response = await http.get(Uri.parse(url));
-
-  if (response.statusCode == 200) {
-    return Books.fromJson(jsonDecode(response.body));
-  } else {
-    return Books(books: []);
-  }*/
 }
 
 class PreviewVideoWidget extends StatefulWidget {

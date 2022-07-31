@@ -35,7 +35,6 @@ class _HomeListPageWidgetState extends State<HomeListPageWidget> {
 
     _scrollController.addListener(_scrollListener);
     WidgetsBinding.instance.addPostFrameCallback((_) => loadBookList());
-    //loadBookList();
   }
 
   Future<void> loadBookList() async {
@@ -120,15 +119,12 @@ class _HomeListPageWidgetState extends State<HomeListPageWidget> {
     return WillPopScope(
       onWillPop: () async {
         return false;
-      }, //() async => return shouldPop;,
+      },
       child: Scaffold(
         extendBody: true,
-        //color: interfaces.color_black,
-
         backgroundColor: interfaces.color_black,
         appBar: interfaces.PreferredSizeMenu(main_scale),
         bottomNavigationBar: interfaces.FloatingNavbarBottomMenu(),
-
         body: LoaderOverlay(
           overlayColor: interfaces.color_black,
           overlayOpacity: 0.3,
