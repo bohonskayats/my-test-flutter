@@ -40,7 +40,7 @@ class _SplashScreenWidgetState extends State<SplashScreenWidget> {
   void initState() {
     super.initState();
 
-    WidgetsFlutterBinding.ensureInitialized();
+    //WidgetsFlutterBinding.ensureInitialized();
 
     hasbeenloadedFuture = getStartingDatas(context);
   }

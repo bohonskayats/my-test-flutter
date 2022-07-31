@@ -26,12 +26,9 @@ class LoginPageWidget extends StatefulWidget {
   _LoginPageWidgetState createState() => new _LoginPageWidgetState();
 }
 
-enum FormType { login, register }
-
 class _LoginPageWidgetState extends State<LoginPageWidget> {
   String _email = "";
   String _password = "";
-  FormType _formType = FormType.login;
   String _authHint = '';
 //error_login
   void loginSubmit() async {
@@ -52,7 +49,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
 
   late TextEditingController _controller_password;
   bool _passwordVisible = false;
-  late double _border_radius = 1684; //* main_scale;
+  late double _border_radius = 1684;
   late int _pressedColor = 0xdeadbeef;
   final KeyboardBloc _bloc = KeyboardBloc();
   bool isVisibleKeyboard = false;
@@ -102,13 +99,13 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
       });
     });
     keyboardVisibilityController = KeyboardVisibilityController();
-    setData();
     _controller_email = new TextEditingController(text: _email);
 
     _controller_password = new TextEditingController(text: _password);
 
     _controller_password.addListener(_catchPasswordValue);
     _controller_email.addListener(_catchEmailtValue);
+    setData();
   }
 
   void _catchEmailtValue() {
@@ -321,11 +318,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
           textAlign: TextAlign.left,
           textScaleFactor: interfaces.textFactor,
           text: TextSpan(
-            text: FormType.register == _formType
-                ? ""
-                : error == true
-                    ? "Логин или пароль неверны"
-                    : "",
+            text: error == true ? "Логин или пароль неверны" : "",
             style: TextStyle(
                 color: interfaces.error_text,
                 fontSize: interfaces.font_size,
@@ -381,7 +374,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
           width: _width,
           color: interfaces.color_black,
           child: LoaderOverlay(
-            overlayColor: interfaces.loader_overlay_color,
+            overlayColor: interfaces.color_black,
             overlayOpacity: 0.3,
             child: Center(
               child: Stack(
@@ -393,7 +386,7 @@ class _LoginPageWidgetState extends State<LoginPageWidget> {
                     child: Container(
                       height: interfaces.block_login_height * main_scale,
                       margin: EdgeInsets.only(
-                        top: 40 * main_scale,
+                        top: 20 * main_scale,
                       ),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,

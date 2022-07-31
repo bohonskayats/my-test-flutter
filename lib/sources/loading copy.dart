@@ -10,7 +10,7 @@ import 'interface.dart' as interfaces;
 import 'data_structeres.dart';
 import 'package:http/http.dart' as http;
 
-String url_image = "https://picsum.photos/200/300?random=1";
+String url0 = 'https://jsonplaceholder.typicode.com/albums/1';
 String url =
     "https://gist.githubusercontent.com/nanotaboada/6396437/raw/855dd84436be2c86e192abae2ac605743fc3a127/books.json";
 Future<Books> fetchAlbum() async {
@@ -60,7 +60,7 @@ class _LoadImagesLocaly extends State<PreviewVideoWidget> {
       setState(() {
         _visible = true;
         if (widget.image_radius == -1) {
-          _image_radius = interfaces.normal_list_image_width;
+          _image_radius = interfaces.normal_top_block_width;
         } else {
           _image_radius = widget.image_radius;
         }
@@ -178,13 +178,4 @@ class _LoadImagesLocaly extends State<PreviewVideoWidget> {
         // width: 10.0,
       );
   }
-}
-
-Future<Uint8List> downloadImage1(String filename) async {
-  //var image = await readImageFromLocalStorage(_filename);
-  final ByteData imageData =
-      await NetworkAssetBundle(Uri.parse(filename)).load("");
-  final Uint8List bytes = imageData.buffer.asUint8List();
-
-  return bytes;
 }
